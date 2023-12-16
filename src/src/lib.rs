@@ -5,6 +5,7 @@ mod dir_glue;
 mod file_glue;
 mod glue;
 mod tcp_glue;
+mod parallel;
 
 use core::alloc::Layout;
 use core::ffi::c_void;
@@ -18,6 +19,7 @@ use std::io::{BufRead, BufReader, ErrorKind, Read, Write};
 use std::net::TcpStream;
 use std::path::Path;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
+use crate::parallel::*;
 
 use file_glue::ReadErr;
 use file_glue::WriteErr;
@@ -261,6 +263,10 @@ pub fn init() {
         roc_fx_dirCreateAll as _,
         roc_fx_dirDeleteEmpty as _,
         roc_fx_dirDeleteAll as _,
+        roc_parallel_context_create as _,
+        roc_parallel_context_register_task as _,
+        roc_parallel_context_run as _,
+        roc_parallel_context_destroy as _,
     ];
     std::mem::forget(std::hint::black_box(funcs));
     if cfg!(unix) {
